@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>2026 Daily Bible Reading Plan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: #f6f4ff;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  max-width: 1000px;
+  width: 90%;
+  padding: 40px 20px;
+}
+
+h1 {
+  text-align: center;
+  font-family: "Playfair Display", serif;
+  color: #3c2a6d;
+}
+
+.subtitle {
+  text-align: center;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.buttons {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+button {
+  background: #6b5bd2;
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  margin: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+button:hover {
+  background: #5849b8;
+}
+
+#content {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.month {
+  margin-top: 30px;
+}
+
+.plan-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.date {
+  font-weight: 600;
+  color: #6b5bd2;
+}
+
+a {
+  color: #3c2a6d;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.month h3 {
+cursor: pointer;
+user-select: none;
+background: #f1efff;
+padding: 10px 14px;                                                
+border-radius: 8px;      
+}
+
+.month h3::after {
+  content: "▸";
+  float: right;
+  transition: transform 0.2s;
+}
+
+.month.open h3::after {
+  transform: rotate(90deg);
+}
+
+.month-content {
+  display: none;
+  padding-left: 10px;
+}
+
+.month.open .month-content {
+  display: block;
+}
+
+.gateway-link {
+font-size: 0.9rem;
+color: #6b5bd2;
+margin-left: 6px;
+font-style: italic;
+}
+
+
+</style>
+</head>
+
+<body>
+<div class="container">
+<h1>2026 Daily Bible Reading</h1>
+<div class="subtitle">One day. One passage. Walking through Scripture together.</div>
+
+<div class="buttons">
+  <button id="todayBtn">Today’s Reading</button>
+  <button id="planBtn">Full Reading Plan</button>
+</div>
+
+<div id="selector" style="display:none; margin-bottom:20px;">
+  <label>
+    Month:
+    <select id="monthSelect"></select>
+  </label>
+  
+  <label style="margin-left:15px;">
+    Day:
+    <select id="daySelect"></select>
+  </label>
+  
+  <button id="goBtn" style="margin-left:15px;">Go</button>
+</div>
+
+<div id="content"></div>
+</div>
+
+<script>
+const BASE = "https://www.biblegateway.com/passage/?search=";
+const VERSION = "&version=NIV";
+const link = p => BASE + encodeURIComponent(p) + VERSION;
+
+const progressKey = "bibleReadingProgress";
+
+function getProgress() {
+  return JSON.parse(localStorage.getItem(progressKey)) || {};
+}
+
+function saveProgress(data) {
+  localStorage.setItem(progressKey, JSON.stringify(data));
+}
+
+function toggleProgress(month, day) {
+  const progress = getProgress();
+  const key = `${month}-${day}`;
+  progress[key] = !progress[key];
+  saveProgress(progress);
+}
+
+/* =========================
+   MONTH COLLAPSE STATE
+========================= */
+const monthStateKey = "bibleReadingMonthState";
+
+function getMonthState() {
+  return JSON.parse(localStorage.getItem(monthStateKey)) || {};
+}
+
+function toggleMonth(month) {
+  const state = getMonthState();
+  state[month] = !state[month];
+  localStorage.setItem(monthStateKey, JSON.stringify(state));
+  showPlan(); // re-render
+}
+
+/* =========================
+   FULL YEAR READING PLAN
+========================= */
+const plan = {
+January: [
+["1","Genesis 1:1-19"],["2","Genesis 1:20-2:4"],["3","Genesis 2:5-25"],
+["4","Genesis 3:1-21"],["5","Genesis 3:22-4:16"],["6","Genesis 4:17-5:5"],
+["7","Genesis 5:6-32"],["8","Genesis 6:1-22"],["9","Genesis 7:1-24"],
+["10","Genesis 8:1-22"],["11","Genesis 9:1-17"],["12","Genesis 9:18-29"],
+["13","Genesis 11:1-9,27-32"],["14","Genesis 12:1-20"],["15","Genesis 13:1-18"],
+["16","Genesis 14:8-24"],["17","Genesis 15:1-21"],["18","Genesis 16:1-16"],
+["19","Genesis 17:1-27"],["20","Genesis 18:1-33"],["21","Genesis 18:16-33"],
+["22","Genesis 19:1-38"],["23","Genesis 20:1-18"],["24","Genesis 21:1-21"],
+["25","Genesis 21:22-34"],["26","Genesis 22:1-19"],["27","Genesis 22:20-24"],
+["28","Genesis 23:1-20"],["29","Genesis 24:1-67"],["30","Genesis 25:1-18"],
+["31","Genesis 31:8;41:8"]
+],
+
+February: [
+["1","Psalm 5:1-12"],["2","Psalm 8:1-9"],["3","Psalm 7:1-17"],
+["4","Psalm 8:1-9"],["5","Psalm 10:1-18"],["6","Psalm 11:1-7"],
+["7","Psalm 12:1-8"],["8","Psalm 13:1-6"],["9","Psalm 14:1-7"],
+["10","Psalm 15:1-5"],["11","Psalm 9:1-20"],["12","Psalm 9:18-29"],
+["13","Psalm 11:9,27-32"],["14","Psalm 12:1-20"],
+["15","Psalm 13:1-18"],["16","Psalm 15:1-21"],["17","Psalm 17:1-27"],
+["18","Psalm 17:1-27"],["19","Psalm 19:1-14"],["20","Psalm 20:1-9"],
+["21","Psalm 21:1-13"],["22","Psalm 22:1-34"],["23","Psalm 6:1-13"],
+["24","Psalm 6:14-29"],["25","Psalm 6:30-56"],["26","Psalm 7:1-23"],
+["27","Psalm 8:1-21"],["28","Psalm 8:22-38"]
+],
+
+March: [
+["1","Mark 9:1-13"],["2","Mark 9:14-32"],["3","Psalm 16:1-11"],
+["4","Mark 17:1-15"],["5","Mark 18:1-30"],["6","Mark 18:31-50"],
+["7","Mark 19:1-14"],["8","Mark 20:1-9"],["9","Mark 21:1-13"],
+["10","Mark 22:1-21"],["11","Mark 22:22-31"],["12","Mark 23:1-6"],
+["13","Mark 25:1-22"]
+],
+
+April: [
+["1","Mark 14:66-72"],["2","Mark 15:1-20"],["3","Mark 15:21-32"],
+["4","Mark 15:33-47"],["5","Mark 16:1-8"],["6","Mark 16:9-20"],
+["7","Isaiah 11:1-7"],["8","Isaiah 11:8-31"],["9","Isaiah 12:1-11"],
+["10","Isaiah 21:2-12"],["11","Isaiah 3:1-15"],["12","Isaiah 3:16-4:7"],
+["13","Isaiah 4:2-5"],["14","Isaiah 5:8-17"],["15","Isaiah 5:18-30"],
+["16","Isaiah 6:1-13"],["17","Isaiah 7:1-25"],["18","Isaiah 8:1-22"],
+["19","Isaiah 9:1-7"],["20","Isaiah 9:8-21"]
+],
+
+May: [
+["1","1 Corinthians 7:12-24"],["2","1 Corinthians 7:25-40"],
+["3","Genesis 24:1-33"],["4","Genesis 24:34-67"],
+["5","Genesis 25:1-34"],["6","Genesis 26:1-35"],
+["7","Genesis 27:1-29"],["8","Genesis 27:30-45"],
+["9","Genesis 27:46-28:22"],["10","Genesis 29:1-30"],
+["11","Genesis 29:31-34"],["12","Genesis 31:1-24"],
+["13","Genesis 31:25-55"],["14","Psalm 24:1-10"],
+["15","Philemon 1:1-6"],["16","Philemon 1:17-25"],
+["17","1 Corinthians 8:1-13"],["18","1 Corinthians 9:1-14"],
+["19","1 Corinthians 9:15-27"],["20","1 Corinthians 10:1-13"],
+["21","1 Corinthians 10:14-11:1"],["22","1 Corinthians 11:2-16"],
+["23","1 Corinthians 11:17-34"],["24","1 Corinthians 12:1-13"],
+["25","1 Corinthians 12:14-31"],["26","1 Corinthians 13:1-13"],
+["27","1 Corinthians 13:8-13"],["28","1 Corinthians 14:1-19"],
+["29","1 Corinthians 14:20-40"],["30","1 Corinthians 15:1-19"],
+["31","1 Corinthians 15:20-34"]
+]
+  ,
+June: [
+["1","Genesis 15:35-49"],["2","Genesis 15:50-58"],["3","Genesis 16:1-24"],
+["4","Genesis 32:1-21"],["5","Genesis 32:22-32"],["6","Genesis 33:1-20"],
+["7","Genesis 34:1-31"],["8","Genesis 35:1-11"],["9","Genesis 37:1-11"],
+["10","Genesis 37:12-36"],["11","Genesis 38:1-30"],["12","Genesis 39:1-23"],
+["13","Genesis 40:1-23"],["14","Psalm 24:1-10"],["15","Genesis 41:1-36"],
+["16","Genesis 42:25-38"],["17","Genesis 42:38-43:15"],
+["18","Genesis 43:15-34"],["19","Genesis 44:1-17"],
+["20","Genesis 44:18-34"],["21","Genesis 44:48-53"],
+["22","Genesis 45:4-20"],["23","Genesis 45:21-47"],
+["24","Genesis 47:13-31"],["25","Genesis 48:1-22"],
+["26","Genesis 48:1-22"],["27","Genesis 49:1-27"],
+["28","Genesis 49:28-50:26"],
+["29","Galatians 1:1-10"],["30","Galatians 1:11-24"]
+],
+
+July: [
+["1","Galatians 2:1-10"],["2","Galatians 2:11-21"],
+["3","Galatians 3:1-14"],["4","Galatians 3:15-29"],
+["5","Galatians 4:1-20"],["6","Galatians 4:21-31"],
+["7","Galatians 5:1-15"],["8","Galatians 5:16-26"],
+["9","Galatians 6:1-10"],["10","Galatians 6:11-18"]
+],
+
+August: [
+["1","Ephesians 3:1-13"],["2","Ephesians 3:14-21"],
+["3","Ephesians 4:1-16"],["4","Ephesians 4:17-32"],
+["5","Ephesians 5:1-21"],["6","Ephesians 5:22-33"],
+["7","Ephesians 6:1-9"],["8","Ephesians 6:10-24"],
+["9","Judges 1:1-21"],["10","Judges 2:1-10"],
+["11","Judges 2:11-23"],["12","Judges 3:1-11"],
+["13","Judges 4:1-24"],["14","Judges 5:1-18"],
+["15","Judges 5:19-31"],["16","Judges 6:1-18"],
+["17","Judges 6:19-32"],["18","Judges 6:33-40"],
+["19","Judges 7:1-8"],["20","Judges 7:9-25"],
+["21","Judges 8:1-21"],["22","Judges 8:22-35"],
+["23","Judges 9:1-21"],["24","Judges 9:22-57"],
+["25","Judges 11:1-28"],["26","Judges 11:29-40"],
+["27","Judges 13:1-14"],["28","Judges 13:15-25"],
+["29","Judges 14:1-20"],["30","Judges 15:1-20"],
+["31","Judges 16:1-17"]
+],
+
+September: [
+["1","Judges 16:18-31"],["2","Judges 17:1-13"],
+["3","Judges 18:1-31"],["4","Judges 18:1-31"],
+["5","Isaiah 10:1-34"],["6","Isaiah 11:1-16"],
+["7","Isaiah 12:1-6"],["8","Isaiah 13:1-22"],
+["9","Isaiah 14:1-23"],["10","Isaiah 17:1-18:7"],
+["11","Isaiah 19:1-15"],["12","Isaiah 19:16-25"],
+["13","Isaiah 24:1-20"],["14","Isaiah 24:21-25:12"],
+["15","Isaiah 26:1-21"],["16","Isaiah 27:1-13"],
+["17","Isaiah 28:1-29"],["18","Isaiah 29:1-24"],
+["19","Isaiah 30:1-8"],["20","Isaiah 30:19-33"],
+["21","Isaiah 31:1-9"],["22","Isaiah 32:1-20"],
+["23","Isaiah 33:1-24"],["24","Isaiah 35:1-10"],
+["25","Isaiah 36:1-22"],["26","Isaiah 37:1-38"],
+["27","Isaiah 37:14-20"],["28","Isaiah 37:21-38"],
+["29","Isaiah 38:1-22"],["30","Isaiah 39:1-8"]
+],
+
+October: [
+["1","1 John 1:1-10"],["2","1 John 2:1-11"],
+["3","1 John 2:12-17"],["4","1 John 2:18-29"],
+["5","1 John 3:1-10"],["6","1 John 3:11-24"],
+["7","1 John 4:1-12"],["8","1 John 4:13-21"],
+["9","1 John 5:1-12"],["10","1 John 5:13-21"],
+["11","2 John 1:1-13"],["12","3 John 1:1-15"],
+["13","Isaiah 40:1-11"],["14","Isaiah 40:12-31"],
+["15","Isaiah 41:1-16"],["16","Isaiah 41:17-29"],
+["17","Isaiah 42:1-9"],["18","Isaiah 42:10-25"],
+["19","Isaiah 43:1-13"],["20","Isaiah 43:14-28"],
+["21","Isaiah 44:1-23"],["22","Isaiah 44:24-45:8"],
+["23","Isaiah 45:9-25"],["24","Isaiah 46:1-13"],
+["25","Isaiah 47:1-15"],["26","Isaiah 48:1-22"],
+["27","Isaiah 49:1-7"],["28","Isaiah 49:8-26"],
+["29","Isaiah 50:1-11"],["30","Isaiah 51:1-16"],
+["31","Isaiah 51:17-52:12"]
+],
+
+November: [
+["1","Isaiah 52:13-53:12"],["2","Philippians 1:1-11"],
+["3","Philippians 1:12-18"],["4","Philippians 1:18-30"],
+["5","Philippians 2:1-11"],["6","Philippians 2:12-18"],
+["7","Philippians 2:19-30"],["8","Philippians 3:1-11"],
+["9","Philippians 3:12-21"],["10","Philippians 4:2-9"],
+["11","Philippians 4:10-23"],["12","Isaiah 54:1-17"],
+["13","Isaiah 55:1-13"],["14","Isaiah 56:1-12"],
+["15","Isaiah 57:1-21"],["16","Isaiah 58:1-14"],
+["17","Isaiah 59:1-21"],["18","Isaiah 60:1-22"],
+["19","Isaiah 61:1-11"],["20","Isaiah 62:1-12"],
+["21","Isaiah 63:1-14"],["22","Isaiah 63:15-64:12"],
+["23","Isaiah 65:1-16"],["24","Isaiah 65:17-25"],
+["25","Isaiah 66:1-14"],["26","Isaiah 66:15-24"]
+],
+
+December: [
+["1","1 Thessalonians 4:1-12"],["2","1 Thessalonians 4:13-18"],
+["3","1 Thessalonians 5:1-11"],["4","1 Thessalonians 5:12-28"],
+["5","Hosea 1:1-11"],["6","Hosea 2:2-13"],
+["7","Hosea 2:14-23"],["8","Hosea 4:1-19"],
+["9","Hosea 5:1-11"],["10","Hosea 7:1-14"],
+["11","Hosea 11:1-12"],["12","Hosea 12:1-14"],
+["13","Hosea 13:1-16"],["14","Hosea 14:1-9"],
+["15","Psalm 26:1-12"],["16","2 Thessalonians 1:1-12"],
+["17","2 Thessalonians 2:1-12"],["18","2 Thessalonians 2:13-3:5"],
+["19","2 Thessalonians 3:6-18"],
+["20","Luke 1:1-10"],["21","Luke 1:11-25"],
+["22","Luke 1:26-38"],["23","Luke 1:39-56"],
+["24","Luke 1:57-80"],["25","Luke 2:1-20"],
+["26","Luke 2:21-40"],["27","Luke 2:41-52"],
+["28","Psalm 27:1-14"],["29","Psalm 28:1-9"],
+["30","Psalm 29:1-11"],["31","Psalm 30:1-12"]
+]
+
+};
+
+/* =========================
+   BUTTON HANDLERS
+========================= */
+function showToday() {
+  const now = new Date();
+  const month = now.toLocaleString("default",{month:"long"});
+  const day = now.getDate().toString();
+  const entry = plan[month]?.find(e => e[0] === day);
+
+  const selector = document.getElementById("selector");
+  selector.style.display = "none";
+
+  const content = document.getElementById("content");
+  const progress = getProgress();
+  const checked = progress[`${month}-${day}`] ? "checked" : "";
+
+  if (!entry) {
+    content.innerHTML = "<h2>No reading scheduled.</h2>";
+    return;
+  }
+
+  content.innerHTML = `
+    <h2>Today’s Reading</h2>
+    <p class="date">${month} ${day}</p>
+
+    <label>
+      <input type="checkbox"
+        ${checked}
+        onchange="toggleProgress('${month}','${day}')">
+      Mark as completed
+    </label>
+
+    <p>
+      <a href="${link(entry[1])}" target="_blank">
+        ${entry[1]}
+        <span class="gateway-link">— Click here to read on Bible Gateway</span>
+      </a>
+    </p>
+  `;
+}
+
+
+function showPlan() {
+  const content = document.getElementById("content");
+  const selector = document.getElementById("selector");
+  selector.style.display = "block";
+
+  populateMonthSelector();
+
+  const progress = getProgress();
+  const monthState = getMonthState();
+  const currentMonth =
+    new Date().toLocaleString("default", { month: "long" });
+
+  let html = "<h2>Full Reading Plan</h2>";
+
+  for (const month in plan) {
+    const isOpen =
+      monthState[month] !== undefined
+        ? monthState[month]
+        : month === currentMonth;
+
+    html += `
+      <div class="month ${isOpen ? "open" : ""}">
+        <h3 onclick="toggleMonth('${month}')">${month}</h3>
+        <div class="month-content">
+    `;
+
+    plan[month].forEach(e => {
+      const done = progress[`${month}-${e[0]}`] ? "checked" : "";
+      html += `
+        <div class="plan-item">
+          <input type="checkbox"
+            ${done}
+            onchange="toggleProgress('${month}','${e[0]}')">
+          <span class="date">${month} ${e[0]}</span><br>
+          <a href="${link(e[1])}" target="_blank">
+            ${e[1]}
+            <span class="gateway-link">— Click here to read on Bible Gateway</span>
+          </a>
+        </div>
+      `;
+    });
+
+    html += `
+        </div>
+      </div>
+    `;
+  }
+
+  content.innerHTML = html;
+}
+
+
+  function populateMonthSelector() {
+  const monthSelect = document.getElementById("monthSelect");
+  const daySelect = document.getElementById("daySelect");
+
+  monthSelect.innerHTML = "";
+  Object.keys(plan).forEach(month => {
+    const opt = document.createElement("option");
+    opt.value = month;
+    opt.textContent = month;
+    monthSelect.appendChild(opt);
+  });
+
+  monthSelect.onchange = () => populateDaySelector(monthSelect.value);
+  populateDaySelector(monthSelect.value);
+}
+
+function populateDaySelector(month) {
+  const daySelect = document.getElementById("daySelect");
+  daySelect.innerHTML = "";
+
+  plan[month].forEach(e => {
+    const opt = document.createElement("option");
+    opt.value = e[0];
+    opt.textContent = e[0];
+    daySelect.appendChild(opt);
+  });
+}
+
+document.getElementById("goBtn").onclick = () => {
+  const month = document.getElementById("monthSelect").value;
+  const day = document.getElementById("daySelect").value;
+  const entry = plan[month].find(e => e[0] === day);
+
+document.getElementById("content").innerHTML = `
+  <h2>${month} ${day}</h2>
+  <p>
+    <a href="${link(entry[1])}" target="_blank">
+      ${entry[1]}
+      <span class="gateway-link">— Click here to read on Bible Gateway</span>
+    </a>
+  </p>
+`;
+};
+
+
+
+document.getElementById("todayBtn").onclick = showToday;
+document.getElementById("planBtn").onclick = showPlan;
+</script>
+</body>
+</html>
