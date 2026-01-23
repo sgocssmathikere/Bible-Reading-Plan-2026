@@ -11,7 +11,7 @@
 body {
   margin: 0;
   font-family: Inter, sans-serif;
-  background: #f6f4ff;
+  background: linear-gradient(180deg, #f5f0ff, #ebe6ff);
   display: flex;
   justify-content: center;
 }
@@ -25,14 +25,42 @@ body {
 h1 {
   text-align: center;
   font-family: "Playfair Display", serif;
-  color: #3c2a6d;
+  color: #3b2f6b;
+  font-size: 2.8rem;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+h1::after {
+  content: "";
+  display: block;
+  width: 90px;
+  height: 3px;
+  background: linear-gradient(90deg, #9a8cff, #c6bfff);
+  margin: 14px auto 0;
+  border-radius: 2px;
 }
 
 .subtitle {
   text-align: center;
-  color: #555;
-  margin-bottom: 30px;
+  font-family: "Playfair Display", serif;  /* matches Scripture feel */
+  font-size: 1.15rem;
+  color: #5a4b8a;
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0 auto 28px;
+  font-style: italic;
+  letter-spacing: 0.2px;
 }
+
+#content h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.6rem;
+  color: #3b2f6b;
+  margin-bottom: 16px;
+  letter-spacing: 0.3px;
+}
+
 
 .buttons {
   text-align: center;
@@ -40,18 +68,21 @@ h1 {
 }
 
 button {
-  background: #6b5bd2;
+  background: linear-gradient(135deg, #7b6ce0, #9a8cff);
   color: white;
   border: none;
-  padding: 14px 24px;
+  padding: 14px 26px;
   margin: 8px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 1rem;
+  box-shadow: 0 6px 15px rgba(123,108,224,0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 button:hover {
-  background: #5849b8;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(123,108,224,0.45);
 }
 
 #content {
@@ -71,9 +102,13 @@ button:hover {
 }
 
 .date {
+  font-family: Inter, sans-serif;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: #6b5bd2;
+  color: #7b6ce0;
+  letter-spacing: 0.4px;
 }
+
 
 a {
   color: #3c2a6d;
@@ -83,6 +118,7 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
 
 .month h3 {
 cursor: pointer;
@@ -112,11 +148,195 @@ border-radius: 8px;
 }
 
 .gateway-link {
-font-size: 0.9rem;
-color: #6b5bd2;
-margin-left: 6px;
-font-style: italic;
+  font-family: Inter, sans-serif;
+  font-size: 0.85rem;
+  color: #8a7fd8;
+  font-style: italic;
+  margin-left: 6px;
 }
+
+
+#content label {
+  font-family: Inter, sans-serif;
+  font-size: 0.95rem;
+  color: #4a3d7a;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+
+.hero-image {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0 40px;
+}
+
+.hero-image img {
+  max-width: 220px;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(60,42,109,0.25);
+  animation: softFade 0.8s ease-out;
+}
+
+@keyframes softFade {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+#content {
+  background: white;
+  border-radius: 14px;
+  padding: 30px;
+  box-shadow: 0 12px 30px rgba(90,70,180,0.18);
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.progress-wrapper {
+  max-width: 520px;
+  margin: 20px auto 30px;
+  text-align: center;
+}
+
+.progress-label {
+  font-family: Inter, sans-serif;
+  font-size: 0.9rem;
+  color: #4a3d7a;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  background: #e6e1ff;
+  border-radius: 10px;
+  height: 14px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #7b6ce0, #9a8cff);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+
+#selector {
+  display: none;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+#selector.show {
+  display: flex;
+}
+
+.selector-inner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  background: #f1eeff;
+  padding: 14px 16px;
+  border-radius: 12px;
+}
+
+
+#selector label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  color: #4a3d7a;
+}
+
+#selector select {
+  width: 140px;          /* 👈 compact rectangle */
+  padding: 6px 10px;
+  font-size: 0.95rem;
+  border-radius: 6px;
+}
+
+
+
+.date-selector {
+  background: linear-gradient(180deg, #f3efff, #ebe6ff);
+  border-radius: 14px;
+  padding: 18px 22px;
+  margin-bottom: 28px;
+  box-shadow: 0 8px 20px rgba(90,70,180,0.18);
+  display: none;                 /* hidden by default */
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.date-selector label {
+  font-size: 0.95rem;
+  color: #4a3d7a;
+  font-weight: 500;
+}
+
+.date-selector select {
+  margin-left: 6px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #cfc8ff;
+  background: white;
+  font-size: 0.95rem;
+  font-family: Inter, sans-serif;
+  color: #3b2f6b;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.date-selector select:focus {
+  border-color: #7b6ce0;
+  box-shadow: 0 0 0 3px rgba(123,108,224,0.25);
+}
+
+.date-selector button {
+  padding: 11px 22px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+  .selector-inner {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #selector select {
+    width: 220px;        /* slightly wider on mobile */
+  }
+
+  #goBtn {
+    width: auto;
+    padding: 8px 20px;
+    margin-top: 6px;
+  }
+}
+
 
 
 </style>
@@ -127,24 +347,42 @@ font-style: italic;
 <h1>2026 Daily Bible Reading</h1>
 <div class="subtitle">"Your word is a lamp to my feet, and a light to my path." Psalms 119:105</div>
 
+<div class="hero-image">
+  <img src="images/bible_reading.jpg" alt="Bible Reading">
+</div>
+
+
 <div class="buttons">
   <button id="todayBtn">Today’s Reading</button>
   <button id="planBtn">Full Reading Plan</button>
 </div>
 
-<div id="selector" style="display:none; margin-bottom:20px;">
-  <label>
-    Month:
-    <select id="monthSelect"></select>
-  </label>
-  
-  <label style="margin-left:15px;">
-    Day:
-    <select id="daySelect"></select>
-  </label>
-  
-  <button id="goBtn" style="margin-left:15px;">Go</button>
+<div class="progress-wrapper">
+  <div class="progress-label">
+    <span id="progressText">Progress Bar: 0 of 365 days completed</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
 </div>
+
+
+<div id="selector">
+  <div class="selector-inner">
+    <label>
+      Month:
+      <select id="monthSelect"></select>
+    </label>
+
+    <label>
+      Day:
+      <select id="daySelect"></select>
+    </label>
+
+    <button id="goBtn">Go</button>
+  </div>
+</div>
+
 
 <div id="content"></div>
 </div>
@@ -169,6 +407,7 @@ function toggleProgress(month, day) {
   const key = `${month}-${day}`;
   progress[key] = !progress[key];
   saveProgress(progress);
+  updateProgressBar();
 }
 
 /* =========================
@@ -759,6 +998,24 @@ function populateDaySelector(month) {
   });
 }
 
+function updateProgressBar() {
+  const progress = getProgress();
+
+  const totalDays = Object.values(plan).reduce(
+    (sum, month) => sum + month.length,
+    0
+  );
+
+  const completed = Object.values(progress).filter(Boolean).length;
+
+  const percent = Math.round((completed / totalDays) * 100);
+
+  document.getElementById("progressFill").style.width = percent + "%";
+  document.getElementById("progressText").textContent =
+    `Progress Bar: ${completed} of ${totalDays} days completed`;
+}
+
+
 document.getElementById("goBtn").onclick = () => {
   const month = document.getElementById("monthSelect").value;
   const day = document.getElementById("daySelect").value;
@@ -775,10 +1032,9 @@ document.getElementById("content").innerHTML = `
 `;
 };
 
-
-
 document.getElementById("todayBtn").onclick = showToday;
 document.getElementById("planBtn").onclick = showPlan;
+updateProgressBar();
 </script>
 </body>
 </html>
